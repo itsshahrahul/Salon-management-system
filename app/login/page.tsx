@@ -69,8 +69,12 @@ export default function LoginPage() {
 
   return (
     <main className="container-base">
-      <div className="card max-w-md mx-auto">
-        <h1 className="text-2xl font-semibold mb-4">Login</h1>
+      <div className="card max-w-md mx-auto space-y-5">
+        <div>
+          <p className="text-xs uppercase tracking-wide text-gray-500">Welcome back</p>
+          <h1 className="text-3xl font-bold mt-1">Login</h1>
+          <p className="muted mt-1">Access your account to continue booking and managing appointments.</p>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <input
@@ -96,10 +100,14 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {message && <p className="mt-3 text-sm text-red-600">{message}</p>}
+        {message && (
+          <p className={`text-sm rounded-lg px-3 py-2 ${message.includes('wrong') || message.includes('failed') ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700'}`}>
+            {message}
+          </p>
+        )}
 
-        <p className="mt-4 text-sm text-gray-600">
-          Admin demo: admin@beardshop.com / admin123
+        <p className="text-xs text-gray-500">
+          Demo Admin: <span className="font-medium">admin@beardshop.com / admin123</span>
         </p>
       </div>
     </main>

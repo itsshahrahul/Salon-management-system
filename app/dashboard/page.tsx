@@ -73,10 +73,13 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="container-base space-y-4">
-      <h1 className="text-2xl font-semibold">Customer Dashboard</h1>
+    <main className="container-base space-y-5">
+      <div>
+        <h1 className="section-title">Customer Dashboard</h1>
+        <p className="muted mt-1">Track your booked appointments and cancel when needed.</p>
+      </div>
 
-      {message && <p className="text-sm text-blue-700">{message}</p>}
+      {message && <p className="text-sm rounded-lg bg-blue-50 text-blue-700 px-3 py-2">{message}</p>}
 
       {loading ? (
         <p>Loading appointments...</p>
@@ -91,7 +94,21 @@ export default function DashboardPage() {
                 <p className="text-sm text-gray-600">
                   {appointment.date} at {appointment.time}
                 </p>
-                <p className="text-sm">Status: <strong>{appointment.status}</strong></p>
+                <p className="text-sm mt-2">
+                  Status:{' '}
+                  <span className={`badge ${
+                    appointment.status === 'approved'
+                      ? 'badge-approved'
+                      : appointment.status === 'rejected'
+                      ? 'badge-rejected'
+                      : appointment.status === 'cancelled'
+                      ? 'badge-cancelled'
+                      : 'badge-pending'
+                  }`}
+                  >
+                    {appointment.status}
+                  </span>
+                </p>
               </div>
 
               {(appointment.status === 'pending' || appointment.status === 'approved') && (

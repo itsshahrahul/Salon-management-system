@@ -95,11 +95,14 @@ function BookPageContent() {
   };
 
   return (
-    <main className="container-base space-y-4">
-      <h1 className="text-2xl font-semibold">Book Appointment</h1>
+    <main className="container-base space-y-5">
+      <div>
+        <h1 className="section-title">Book Appointment</h1>
+        <p className="muted mt-1">Choose your service, preferred date, and time slot.</p>
+      </div>
 
       <div className="grid md:grid-cols-2 gap-4">
-        <form onSubmit={handleSubmit} className="card space-y-3">
+        <form onSubmit={handleSubmit} className="card space-y-4">
           <select
             className="input"
             value={selectedService}
@@ -132,18 +135,20 @@ function BookPageContent() {
           </button>
         </form>
 
-        <div className="card">
-          <h2 className="font-semibold mb-2">Summary</h2>
-          <p><strong>Service:</strong> {serviceInfo?.name || '-'}</p>
-          <p><strong>Price:</strong> {serviceInfo ? `NPR ${serviceInfo.price}` : '-'}</p>
-          <p><strong>Duration:</strong> {serviceInfo ? `${serviceInfo.duration} min` : '-'}</p>
-          <p><strong>Date:</strong> {date || '-'}</p>
-          <p><strong>Time:</strong> {time || '-'}</p>
+        <div className="card space-y-3">
+          <h2 className="text-lg font-semibold">Booking Summary</h2>
+          <div className="space-y-2 text-sm">
+            <p><strong>Service:</strong> {serviceInfo?.name || '-'}</p>
+            <p><strong>Price:</strong> {serviceInfo ? `NPR ${serviceInfo.price}` : '-'}</p>
+            <p><strong>Duration:</strong> {serviceInfo ? `${serviceInfo.duration} min` : '-'}</p>
+            <p><strong>Date:</strong> {date || '-'}</p>
+            <p><strong>Time:</strong> {time || '-'}</p>
+          </div>
         </div>
       </div>
 
       {message && (
-        <p className={`text-sm ${message.includes('successfully') ? 'text-green-600' : 'text-red-600'}`}>
+        <p className={`text-sm rounded-lg px-3 py-2 ${message.includes('successfully') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
           {message}
         </p>
       )}

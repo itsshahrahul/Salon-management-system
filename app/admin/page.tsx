@@ -188,22 +188,25 @@ export default function AdminPage() {
 
   return (
     <main className="container-base space-y-6">
-      <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
+      <div>
+        <h1 className="section-title">Admin Dashboard</h1>
+        <p className="muted mt-1">Manage services and review customer appointments.</p>
+      </div>
 
-      {message && <p className="text-sm text-blue-700">{message}</p>}
+      {message && <p className="text-sm rounded-lg bg-blue-50 text-blue-700 px-3 py-2">{message}</p>}
 
       <section className="grid md:grid-cols-3 gap-4">
         <div className="card">
           <p className="text-sm text-gray-600">Total Services</p>
-          <p className="text-2xl font-bold">{stats.totalServices}</p>
+          <p className="text-3xl font-bold mt-1">{stats.totalServices}</p>
         </div>
         <div className="card">
           <p className="text-sm text-gray-600">Pending Bookings</p>
-          <p className="text-2xl font-bold">{stats.pendingBookings}</p>
+          <p className="text-3xl font-bold mt-1">{stats.pendingBookings}</p>
         </div>
         <div className="card">
           <p className="text-sm text-gray-600">Approved Bookings</p>
-          <p className="text-2xl font-bold">{stats.approvedBookings}</p>
+          <p className="text-3xl font-bold mt-1">{stats.approvedBookings}</p>
         </div>
       </section>
 
@@ -237,7 +240,7 @@ export default function AdminPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left border-b">
+              <tr className="text-left border-b bg-gray-50">
                 <th className="py-2">Name</th>
                 <th>Category</th>
                 <th>Price</th>
@@ -247,7 +250,7 @@ export default function AdminPage() {
             </thead>
             <tbody>
               {services.map((service) => (
-                <tr key={service._id} className="border-b">
+                <tr key={service._id} className="border-b hover:bg-gray-50">
                   <td className="py-2">{service.name}</td>
                   <td>{service.category}</td>
                   <td>NPR {service.price}</td>
@@ -269,7 +272,7 @@ export default function AdminPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left border-b">
+              <tr className="text-left border-b bg-gray-50">
                 <th className="py-2">Customer</th>
                 <th>Service</th>
                 <th>Date</th>
@@ -280,12 +283,25 @@ export default function AdminPage() {
             </thead>
             <tbody>
               {appointments.map((appointment) => (
-                <tr key={appointment._id} className="border-b">
+                <tr key={appointment._id} className="border-b hover:bg-gray-50">
                   <td className="py-2">{appointment.userId?.name || '-'}</td>
                   <td>{appointment.serviceId?.name || '-'}</td>
                   <td>{appointment.date}</td>
                   <td>{appointment.time}</td>
-                  <td>{appointment.status}</td>
+                  <td>
+                    <span className={`badge ${
+                      appointment.status === 'approved'
+                        ? 'badge-approved'
+                        : appointment.status === 'rejected'
+                        ? 'badge-rejected'
+                        : appointment.status === 'cancelled'
+                        ? 'badge-cancelled'
+                        : 'badge-pending'
+                    }`}
+                    >
+                      {appointment.status}
+                    </span>
+                  </td>
                   <td className="space-x-2">
                     <button className="button-secondary py-1" onClick={() => updateAppointmentStatus(appointment._id, 'approved')}>
                       Approve
