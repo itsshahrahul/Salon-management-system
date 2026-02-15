@@ -59,13 +59,13 @@ export default function LoginPage() {
     <main className="container-base">
       <div className="card max-w-4xl mx-auto">
         <div className="grid md:grid-cols-2 gap-6 items-center">
-          <div className="hidden md:flex justify-center">
+          <div className="flex justify-center md:justify-center">
             <Image
               src="/images/barber2.png"
               alt="Barber Login"
-              width={420}
-              height={360}
-              className="rounded-xl border border-gray-200 object-cover"
+              width={360}
+              height={280}
+              className="w-full max-w-xs md:max-w-md rounded-xl border border-gray-200 object-cover"
               priority
             />
           </div>
