@@ -1,17 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { connectDB } from '../../../../lib/mongodb';
 import Appointment from '../../../../models/Appointment';
 import User from '../../../../models/User';
 
-type Params = { params: { id: string } };
-
-export async function PATCH(request: NextRequest, { params }: Params) {
+export async function PATCH(request: Request, { params }: any) {
   try {
-    const body = (await request.json()) as {
-      status?: string;
-      userId?: string;
-      adminId?: string;
-    };
+    const body = await request.json();
     const { status, userId, adminId } = body;
 
     if (!status) {

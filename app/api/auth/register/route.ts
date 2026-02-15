@@ -1,16 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { connectDB } from '../../../../lib/mongodb';
 import User from '../../../../models/User';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, password } = body as {
-      name?: string;
-      email?: string;
-      password?: string;
-    };
+    const { name, email, password } = body;
 
     if (!name || !email || !password) {
       return NextResponse.json({ message: 'All fields are required' }, { status: 400 });

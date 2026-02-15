@@ -3,24 +3,12 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-type UserSession = {
-  _id: string;
-  role: 'customer' | 'admin';
-};
-
-type Service = {
-  _id: string;
-  name: string;
-  price: number;
-  duration: number;
-};
-
 function BookPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [user, setUser] = useState<UserSession | null>(null);
-  const [services, setServices] = useState<Service[]>([]);
+  const [user, setUser] = useState<any>(null);
+  const [services, setServices] = useState<any[]>([]);
   const [selectedService, setSelectedService] = useState(searchParams.get('serviceId') || '');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
@@ -34,7 +22,7 @@ function BookPageContent() {
       return;
     }
 
-    const parsed = JSON.parse(storedUser) as UserSession;
+    const parsed = JSON.parse(storedUser);
     if (parsed.role !== 'customer') {
       router.push('/admin');
       return;
@@ -44,7 +32,7 @@ function BookPageContent() {
 
     const loadServices = async () => {
       const res = await fetch('/api/services');
-      const data = (await res.json()) as { services?: Service[] };
+      const data = await res.json();
       setServices(data.services || []);
     };
 
@@ -53,7 +41,7 @@ function BookPageContent() {
 
   const serviceInfo = services.find((service) => service._id === selectedService);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setMessage('');
 
@@ -76,7 +64,7 @@ function BookPageContent() {
         })
       });
 
-      const data = (await res.json()) as { message?: string };
+      const data = await res.json();
 
       if (!res.ok) {
         setMessage(data.message || 'Booking failed');

@@ -3,34 +3,32 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-type UserSession = {
-  _id: string;
-  role: 'customer' | 'admin';
-};
-
-type Appointment = {
-  _id: string;
-  date: string;
-  time: string;
-  status: 'pending' | 'approved' | 'rejected' | 'cancelled';
-  serviceId?: {
-    name?: string;
-  };
-};
+function getStatusClass(status: string) {
+  if (status === 'approved') return 'badge-approved';
+  if (status === 'rejected') return 'badge-rejected';
+  if (status === 'cancelled') return 'badge-cancelled';
+  return 'badge-pending';
+}
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [user, setUser] = useState<UserSession | null>(null);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [user, setUser] = useState<any>(null);
+  const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
 
   const loadAppointments = async (userId: string) => {
     setLoading(true);
-    const res = await fetch(`/api/appointments?userId=${userId}`);
-    const data = (await res.json()) as { appointments?: Appointment[] };
-    setAppointments(data.appointments || []);
-    setLoading(false);
+    try {
+      const res = await fetch(`/api/appointments?userId=${userId}`);
+      const data = await res.json();
+      setAppointments(data.appointments || []);
+    } catch (_error) {
+      setAppointments([]);
+      setMessage('Failed to load appointments');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -41,7 +39,7 @@ export default function DashboardPage() {
       return;
     }
 
-    const parsed = JSON.parse(storedUser) as UserSession;
+    const parsed = JSON.parse(storedUser);
 
     if (parsed.role !== 'customer') {
       router.push('/admin');
@@ -61,7 +59,7 @@ export default function DashboardPage() {
       body: JSON.stringify({ status: 'cancelled', userId: user._id })
     });
 
-    const data = (await res.json()) as { message?: string };
+    const data = await res.json();
 
     if (!res.ok) {
       setMessage(data.message || 'Failed to cancel appointment');
@@ -96,16 +94,7 @@ export default function DashboardPage() {
                 </p>
                 <p className="text-sm mt-2">
                   Status:{' '}
-                  <span className={`badge ${
-                    appointment.status === 'approved'
-                      ? 'badge-approved'
-                      : appointment.status === 'rejected'
-                      ? 'badge-rejected'
-                      : appointment.status === 'cancelled'
-                      ? 'badge-cancelled'
-                      : 'badge-pending'
-                  }`}
-                  >
+                  <span className={`badge ${getStatusClass(appointment.status)}`}>
                     {appointment.status}
                   </span>
                 </p>

@@ -4,22 +4,15 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-type UserSession = {
-  _id: string;
-  name: string;
-  email: string;
-  role: 'customer' | 'admin';
-};
-
 export default function Navbar() {
-  const [user, setUser] = useState<UserSession | null>(null);
+  const [user, setUser] = useState<any>(null);
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser) as UserSession);
+      setUser(JSON.parse(storedUser));
     } else {
       setUser(null);
     }

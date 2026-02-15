@@ -3,33 +3,17 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-type RegisterForm = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-type RegisterResponse = {
-  message?: string;
-  user?: {
-    role: 'admin' | 'customer';
-    _id: string;
-    name: string;
-    email: string;
-  };
-};
-
 export default function RegisterPage() {
   const router = useRouter();
-  const [form, setForm] = useState<RegisterForm>({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setMessage('');
 
@@ -47,7 +31,7 @@ export default function RegisterPage() {
         body: JSON.stringify(form)
       });
 
-      const data = (await res.json()) as RegisterResponse;
+      const data = await res.json();
 
       if (!res.ok || !data.user) {
         setMessage(data.message || 'Registration failed');

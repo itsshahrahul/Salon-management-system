@@ -1,24 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { connectDB } from '../../../lib/mongodb';
 import Service from '../../../models/Service';
 import User from '../../../models/User';
 
-type ServicePayload = {
-  adminId?: string;
-  name?: string;
-  price?: number | string;
-  duration?: number | string;
-  category?: string;
-  description?: string;
-};
-
-async function isAdmin(adminId?: string): Promise<boolean> {
+async function isAdmin(adminId?: string) {
   if (!adminId) return false;
   const admin = await User.findById(adminId);
   return admin?.role === 'admin';
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
     await connectDB();
 
@@ -49,9 +40,9 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as ServicePayload;
+    const body = await request.json();
     const { adminId, name, price, duration, category, description } = body;
 
     if (!name || !price || !duration || !category || !description) {

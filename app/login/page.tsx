@@ -3,32 +3,17 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-type LoginForm = {
-  email: string;
-  password: string;
-};
-
-type LoginResponse = {
-  message?: string;
-  user?: {
-    role: 'admin' | 'customer';
-    _id: string;
-    name: string;
-    email: string;
-  };
-};
-
 export default function LoginPage() {
   const router = useRouter();
-  const [form, setForm] = useState<LoginForm>({ email: '', password: '' });
+  const [form, setForm] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setMessage('');
 
@@ -46,7 +31,7 @@ export default function LoginPage() {
         body: JSON.stringify(form)
       });
 
-      const data = (await res.json()) as LoginResponse;
+      const data = await res.json();
 
       if (!res.ok || !data.user) {
         setMessage(data.message || 'Login failed');
@@ -105,10 +90,6 @@ export default function LoginPage() {
             {message}
           </p>
         )}
-
-        <p className="text-xs text-gray-500">
-          Demo Admin: <span className="font-medium">admin@beardshop.com / admin123</span>
-        </p>
       </div>
     </main>
   );

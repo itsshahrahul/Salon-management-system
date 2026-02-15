@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { connectDB } from '../../../lib/mongodb';
 import Appointment from '../../../models/Appointment';
 import User from '../../../models/User';
 import Service from '../../../models/Service';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
     await connectDB();
 
@@ -36,15 +36,10 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { userId, serviceId, date, time } = body as {
-      userId?: string;
-      serviceId?: string;
-      date?: string;
-      time?: string;
-    };
+    const { userId, serviceId, date, time } = body;
 
     if (!userId || !serviceId || !date || !time) {
       return NextResponse.json({ message: 'All fields are required' }, { status: 400 });

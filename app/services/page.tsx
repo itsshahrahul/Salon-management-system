@@ -3,17 +3,9 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-type Service = {
-  _id: string;
-  name: string;
-  price: number;
-  duration: number;
-  category: string;
-  description: string;
-};
-
 export default function ServicesPage() {
-  const [services, setServices] = useState<Service[]>([]);
+  const [services, setServices] = useState<any[]>([]);
+  const [userRole, setUserRole] = useState('');
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
@@ -30,7 +22,7 @@ export default function ServicesPage() {
 
     try {
       const res = await fetch(`/api/services?${query.toString()}`);
-      const data = (await res.json()) as { services?: Service[]; message?: string };
+      const data = await res.json();
 
       if (!res.ok) {
         setServices([]);
@@ -48,6 +40,12 @@ export default function ServicesPage() {
   };
 
   useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setUserRole(user.role || '');
+    }
+
     loadServices();
   }, []);
 
@@ -106,9 +104,15 @@ export default function ServicesPage() {
                 <p><strong>Price:</strong> NPR {service.price}</p>
                 <p><strong>Duration:</strong> {service.duration} min</p>
               </div>
-              <Link href={`/book?serviceId=${service._id}`} className="button-primary inline-block">
-                Book Now
-              </Link>
+              {userRole === 'admin' ? (
+                <button className="button-secondary inline-block" disabled>
+                  Admin cannot book
+                </button>
+              ) : (
+                <Link href={`/book?serviceId=${service._id}`} className="button-primary inline-block">
+                  Book Now
+                </Link>
+              )}
             </div>
           ))}
         </div>

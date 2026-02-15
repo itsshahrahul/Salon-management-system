@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { connectDB } from '../../../../lib/mongodb';
 import User from '../../../../models/User';
 import Service from '../../../../models/Service';
 import Appointment from '../../../../models/Appointment';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
     await connectDB();
 

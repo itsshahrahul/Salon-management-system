@@ -1,26 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { connectDB } from '../../../../lib/mongodb';
 import Service from '../../../../models/Service';
 import User from '../../../../models/User';
 
-type Params = { params: { id: string } };
-
-type ServicePayload = {
-  adminId?: string;
-  name?: string;
-  price?: number | string;
-  duration?: number | string;
-  category?: string;
-  description?: string;
-};
-
-async function isAdmin(adminId?: string): Promise<boolean> {
+async function isAdmin(adminId?: string) {
   if (!adminId) return false;
   const admin = await User.findById(adminId);
   return admin?.role === 'admin';
 }
 
-export async function GET(_request: NextRequest, { params }: Params) {
+export async function GET(_request: Request, { params }: any) {
   try {
     await connectDB();
     const service = await Service.findById(params.id);
@@ -35,9 +24,9 @@ export async function GET(_request: NextRequest, { params }: Params) {
   }
 }
 
-export async function PUT(request: NextRequest, { params }: Params) {
+export async function PUT(request: Request, { params }: any) {
   try {
-    const body = (await request.json()) as ServicePayload;
+    const body = await request.json();
     const { adminId, name, price, duration, category, description } = body;
 
     if (!name || !price || !duration || !category || !description) {
@@ -73,9 +62,9 @@ export async function PUT(request: NextRequest, { params }: Params) {
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: Params) {
+export async function DELETE(request: Request, { params }: any) {
   try {
-    const body = (await request.json()) as { adminId?: string };
+    const body = await request.json();
     const { adminId } = body;
 
     await connectDB();

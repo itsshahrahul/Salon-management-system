@@ -3,44 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-type UserSession = {
-  _id: string;
-  role: 'customer' | 'admin';
-};
-
-type Stats = {
-  totalServices: number;
-  pendingBookings: number;
-  approvedBookings: number;
-};
-
-type Service = {
-  _id: string;
-  name: string;
-  price: number;
-  duration: number;
-  category: string;
-  description: string;
-};
-
-type Appointment = {
-  _id: string;
-  date: string;
-  time: string;
-  status: 'pending' | 'approved' | 'rejected' | 'cancelled';
-  userId?: { name?: string };
-  serviceId?: { name?: string };
-};
-
-type ServiceForm = {
-  name: string;
-  price: string;
-  duration: string;
-  category: string;
-  description: string;
-};
-
-const initialServiceForm: ServiceForm = {
+const initialServiceForm = {
   name: '',
   price: '',
   duration: '',
@@ -48,15 +11,20 @@ const initialServiceForm: ServiceForm = {
   description: ''
 };
 
+function getStatusClass(status: string) {
+  if (status === 'approved') return 'badge-approved';
+  if (status === 'rejected') return 'badge-rejected';
+  if (status === 'cancelled') return 'badge-cancelled';
+  return 'badge-pending';
+}
+
 export default function AdminPage() {
   const router = useRouter();
-  const [admin, setAdmin] = useState<UserSession | null>(null);
-
-  const [stats, setStats] = useState<Stats>({ totalServices: 0, pendingBookings: 0, approvedBookings: 0 });
-  const [services, setServices] = useState<Service[]>([]);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-
-  const [serviceForm, setServiceForm] = useState<ServiceForm>(initialServiceForm);
+  const [admin, setAdmin] = useState<any>(null);
+  const [stats, setStats] = useState({ totalServices: 0, pendingBookings: 0, approvedBookings: 0 });
+  const [services, setServices] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [serviceForm, setServiceForm] = useState(initialServiceForm);
   const [editServiceId, setEditServiceId] = useState('');
   const [message, setMessage] = useState('');
 
@@ -67,9 +35,9 @@ export default function AdminPage() {
       fetch(`/api/appointments?adminId=${adminId}`)
     ]);
 
-    const statsData = (await statsRes.json()) as Stats;
-    const servicesData = (await servicesRes.json()) as { services?: Service[] };
-    const appointmentsData = (await appointmentsRes.json()) as { appointments?: Appointment[] };
+    const statsData = await statsRes.json();
+    const servicesData = await servicesRes.json();
+    const appointmentsData = await appointmentsRes.json();
 
     if (statsRes.ok) setStats(statsData);
     setServices(servicesData.services || []);
@@ -84,7 +52,7 @@ export default function AdminPage() {
       return;
     }
 
-    const parsed = JSON.parse(storedUser) as UserSession;
+    const parsed = JSON.parse(storedUser);
 
     if (parsed.role !== 'admin') {
       router.push('/dashboard');
@@ -95,11 +63,11 @@ export default function AdminPage() {
     loadAllData(parsed._id);
   }, [router]);
 
-  const handleServiceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleServiceChange = (e: any) => {
     setServiceForm({ ...serviceForm, [e.target.name]: e.target.value });
   };
 
-  const submitService = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitService = async (e: any) => {
     e.preventDefault();
     setMessage('');
 
@@ -120,7 +88,7 @@ export default function AdminPage() {
       body: JSON.stringify({ ...serviceForm, adminId: admin?._id })
     });
 
-    const data = (await res.json()) as { message?: string };
+    const data = await res.json();
 
     if (!res.ok) {
       setMessage(data.message || 'Action failed');
@@ -135,7 +103,7 @@ export default function AdminPage() {
     }
   };
 
-  const startEditService = (service: Service) => {
+  const startEditService = (service: any) => {
     setEditServiceId(service._id);
     setServiceForm({
       name: service.name,
@@ -153,7 +121,7 @@ export default function AdminPage() {
       body: JSON.stringify({ adminId: admin?._id })
     });
 
-    const data = (await res.json()) as { message?: string };
+    const data = await res.json();
 
     if (!res.ok) {
       setMessage(data.message || 'Delete failed');
@@ -166,14 +134,14 @@ export default function AdminPage() {
     }
   };
 
-  const updateAppointmentStatus = async (appointmentId: string, status: 'approved' | 'rejected') => {
+  const updateAppointmentStatus = async (appointmentId: string, status: string) => {
     const res = await fetch(`/api/appointments/${appointmentId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status, adminId: admin?._id })
     });
 
-    const data = (await res.json()) as { message?: string };
+    const data = await res.json();
 
     if (!res.ok) {
       setMessage(data.message || 'Failed to update appointment');
@@ -289,16 +257,7 @@ export default function AdminPage() {
                   <td>{appointment.date}</td>
                   <td>{appointment.time}</td>
                   <td>
-                    <span className={`badge ${
-                      appointment.status === 'approved'
-                        ? 'badge-approved'
-                        : appointment.status === 'rejected'
-                        ? 'badge-rejected'
-                        : appointment.status === 'cancelled'
-                        ? 'badge-cancelled'
-                        : 'badge-pending'
-                    }`}
-                    >
+                    <span className={`badge ${getStatusClass(appointment.status)}`}>
                       {appointment.status}
                     </span>
                   </td>

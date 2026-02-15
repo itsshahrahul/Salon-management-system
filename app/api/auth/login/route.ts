@@ -1,15 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { connectDB } from '../../../../lib/mongodb';
 import User from '../../../../models/User';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password } = body as {
-      email?: string;
-      password?: string;
-    };
+    const { email, password } = body;
 
     if (!email || !password) {
       return NextResponse.json({ message: 'Email and password are required' }, { status: 400 });
