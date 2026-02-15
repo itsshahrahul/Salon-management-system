@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 export default function RegisterPage() {
   const router = useRouter();
   const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -75,14 +76,23 @@ export default function RegisterPage() {
             onChange={handleChange}
           />
 
-          <input
-            className="input"
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-          />
+          <div className="relative">
+            <input
+              className="input pr-20"
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-blue-600"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
+          </div>
 
           <button type="submit" className="button-primary w-full" disabled={loading}>
             {loading ? 'Creating account...' : 'Register'}

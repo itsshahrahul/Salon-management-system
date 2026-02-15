@@ -2,10 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const router = useRouter();
   const [form, setForm] = useState({ email: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -43,7 +46,7 @@ export default function LoginPage() {
       if (data.user.role === 'admin') {
         router.push('/admin');
       } else {
-        router.push('/dashboard');
+        router.push('/');
       }
     } catch (_error) {
       setMessage('Something went wrong');
@@ -54,42 +57,72 @@ export default function LoginPage() {
 
   return (
     <main className="container-base">
-      <div className="card max-w-md mx-auto space-y-5">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-gray-500">Welcome back</p>
-          <h1 className="text-3xl font-bold mt-1">Login</h1>
-          <p className="muted mt-1">Access your account to continue booking and managing appointments.</p>
+      <div className="card max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-6 items-center">
+          <div className="hidden md:flex justify-center">
+            <Image
+              src="/images/barber2.png"
+              alt="Barber Login"
+              width={420}
+              height={360}
+              className="rounded-xl border border-gray-200 object-cover"
+              priority
+            />
+          </div>
+
+          <div className="space-y-5">
+            <div>
+              <p className="text-xs uppercase tracking-wide text-gray-500">Welcome back</p>
+              <h1 className="text-3xl font-bold mt-1">Login</h1>
+              <p className="muted mt-1">Access your account to continue booking and managing appointments.</p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <input
+                className="input"
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={form.email}
+                onChange={handleChange}
+              />
+
+              <div className="relative">
+                <input
+                  className="input pr-20"
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  placeholder="Password"
+                  value={form.password}
+                  onChange={handleChange}
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-blue-600"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
+
+              <button type="submit" className="button-primary w-full" disabled={loading}>
+                {loading ? 'Logging in...' : 'Login'}
+              </button>
+
+              <div className="text-right">
+                <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
+            </form>
+
+            {message && (
+              <p className={`text-sm rounded-lg px-3 py-2 ${message.includes('wrong') || message.includes('failed') ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700'}`}>
+                {message}
+              </p>
+            )}
+          </div>
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <input
-            className="input"
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-          />
-
-          <input
-            className="input"
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-          />
-
-          <button type="submit" className="button-primary w-full" disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
-
-        {message && (
-          <p className={`text-sm rounded-lg px-3 py-2 ${message.includes('wrong') || message.includes('failed') ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700'}`}>
-            {message}
-          </p>
-        )}
       </div>
     </main>
   );
