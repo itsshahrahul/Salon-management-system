@@ -30,7 +30,7 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/90 backdrop-blur">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-        <Link href="/" className="font-bold text-lg tracking-tight">The Beard Shop</Link>
+        <Link href="/" className="font-bold text-2xl tracking-tight">The Beard Shop</Link>
 
         <div className="flex gap-3 items-center text-sm">
           <Link href="/services" className={linkClass('/services')}>Services</Link>
