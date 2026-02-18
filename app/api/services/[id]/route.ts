@@ -32,14 +32,11 @@ export async function PUT(request: Request, { params }: any) {
     if (!name || !price || !duration || !category || !description) {
       return NextResponse.json({ message: 'All fields are required' }, { status: 400 });
     }
-
     await connectDB();
-
     const allowed = await isAdmin(adminId);
     if (!allowed) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 403 });
     }
-
     const service = await Service.findByIdAndUpdate(
       params.id,
       {
@@ -51,11 +48,9 @@ export async function PUT(request: Request, { params }: any) {
       },
       { new: true }
     );
-
     if (!service) {
       return NextResponse.json({ message: 'Service not found' }, { status: 404 });
     }
-
     return NextResponse.json({ message: 'Service updated', service });
   } catch (error) {
     return NextResponse.json({ message: 'Server error', error: (error as Error).message }, { status: 500 });

@@ -46,6 +46,23 @@ Simple student-level salon management system built with Next.js (App Router), Ja
 4. Open:
    - http://localhost:3000
 
+## One-File Launch (for demo)
+
+If you want to run the whole project from one file:
+
+1. Make sure Python and Node.js are installed.
+2. Run:
+   ```bash
+   python main.py
+   ```
+
+What it does:
+- installs dependencies automatically if needed,
+- starts the Next.js development server,
+- opens the app in your browser automatically.
+
+Stop the app with `Ctrl + C`.
+
 ## Admin Demo Login
 
 - Email: `admin@beardshop.com`

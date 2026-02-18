@@ -44,29 +44,23 @@ export async function POST(request: Request) {
     if (!userId || !serviceId || !date || !time) {
       return NextResponse.json({ message: 'All fields are required' }, { status: 400 });
     }
-
     await connectDB();
-
     const user = await User.findById(userId);
     if (!user || user.role !== 'customer') {
       return NextResponse.json({ message: 'Invalid customer' }, { status: 400 });
     }
-
     const service = await Service.findById(serviceId);
     if (!service) {
       return NextResponse.json({ message: 'Service not found' }, { status: 404 });
     }
-
     const existing = await Appointment.findOne({
       date,
       time,
       status: { $in: ['pending', 'approved'] }
     });
-
     if (existing) {
       return NextResponse.json({ message: 'Slot not available' }, { status: 409 });
     }
-
     const appointment = await Appointment.create({
       userId,
       serviceId,
@@ -74,7 +68,6 @@ export async function POST(request: Request) {
       time,
       status: 'pending'
     });
-
     return NextResponse.json({ message: 'Appointment booked', appointment });
   } catch (error) {
     return NextResponse.json({ message: 'Server error', error: (error as Error).message }, { status: 500 });
